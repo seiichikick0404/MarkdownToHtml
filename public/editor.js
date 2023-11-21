@@ -12,6 +12,14 @@ require(["vs/editor/editor.main"], function () {
     }
   );
 
+  // ラジオボタンラベルがクリックされたときのイベントリスナー
+  var radioLabels = document.querySelectorAll(".btn-group label");
+  radioLabels.forEach(function (label) {
+    label.addEventListener("click", function () {
+      alert("aaaaa");
+    });
+  });
+
   // エディタの内容が変更されたときにプレビューを更新
   editor.onDidChangeModelContent(function () {
     var markdownText = editor.getValue();
@@ -25,7 +33,7 @@ require(["vs/editor/editor.main"], function () {
     })
       .then((response) => response.text())
       .then((html) => {
-        document.getElementById("preview-container").innerHTML = html;
+        document.getElementById("preview-content-area").innerHTML = html;
       });
   });
 });

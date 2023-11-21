@@ -15,7 +15,17 @@ require(["vs/editor/editor.main"], function () {
   // エディタの内容が変更されたときにプレビューを更新
   editor.onDidChangeModelContent(function () {
     var markdownText = editor.getValue();
-    // TODO: MarkdownをHTMLに変換し、プレビューに表示
-    document.getElementById("preview-container").innerHTML = markdownText; // 仮の表示
+
+    fetch("../parser.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: "markdown=" + encodeURIComponent(markdownText),
+    })
+      .then((response) => response.text())
+      .then((html) => {
+        document.getElementById("preview-container").innerHTML = html;
+      });
   });
 });

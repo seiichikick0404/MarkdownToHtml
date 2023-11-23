@@ -31,7 +31,7 @@ require(["vs/editor/editor.main"], function () {
         updatePreview();
       } else if (clickedLabel === "HTML") {
         stateMap.state = "html";
-        alert("HTMLが選択中");
+        displayAsHtml();
       } else if (
         clickedLabel === "Highlight: ON" ||
         clickedLabel === "Highlight: OFF"
@@ -55,7 +55,11 @@ function updatePreview() {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
-      body: "markdown=" + encodeURIComponent(stateMap.markdown),
+      body:
+        "markdown=" +
+        encodeURIComponent(stateMap.markdown) +
+        "&state=" +
+        stateMap["state"],
     })
       .then((response) => response.text())
       .then((html) => {
@@ -69,6 +73,33 @@ function updatePreview() {
       })
       .catch((error) => console.error("Error:", error));
   }
+}
+
+/**
+ * HTMLを文字列として出力
+ *
+ * @param {void}
+ */
+function displayAsHtml() {
+  const markdownText = stateMap.markdown;
+
+  fetch("../parser.php", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body:
+      "markdown=" +
+      encodeURIComponent(markdownText) +
+      "&state=" +
+      stateMap.state,
+  })
+    .then((response) => response.text())
+    .then((htmlString) => {
+      // HTML 文字列を表示
+      document.getElementById("preview-content-area").innerHTML = htmlString;
+    })
+    .catch((error) => console.error("Error:", error));
 }
 
 /**

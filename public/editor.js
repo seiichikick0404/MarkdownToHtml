@@ -38,6 +38,9 @@ require(["vs/editor/editor.main"], function () {
       ) {
         updateHighlightButton(label);
         updatePreview();
+      } else {
+        stateMap.state = "download";
+        downloadHtml();
       }
     });
   });
@@ -98,6 +101,36 @@ function displayAsHtml() {
     .then((htmlString) => {
       // HTML 文字列を表示
       document.getElementById("preview-content-area").innerHTML = htmlString;
+    })
+    .catch((error) => console.error("Error:", error));
+}
+
+function downloadHtml() {
+  const markdownText = stateMap.markdown;
+
+  // PHP スクリプトへのリクエストを送信
+  fetch("../parser.php", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body:
+      "markdown=" +
+      encodeURIComponent(markdownText) +
+      "&state=" +
+      stateMap.state,
+  })
+    .then((response) => response.blob())
+    .then((blob) => {
+      // ダウンロードリンクを作成し、クリックイベントをトリガー
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "export.html";
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      a.remove();
     })
     .catch((error) => console.error("Error:", error));
 }

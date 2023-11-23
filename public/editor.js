@@ -26,19 +26,18 @@ require(["vs/editor/editor.main"], function () {
   document.querySelectorAll(".btn-group label").forEach((label) => {
     label.addEventListener("click", () => {
       const clickedLabel = label.textContent.trim();
-      switch (clickedLabel) {
-        case "Preview":
-          stateMap.state = "preview";
-          updatePreview();
-          break;
-        case "HTML":
-          stateMap.state = "html";
-          alert("HTMLが選択中");
-          break;
-        case "Highlight: ON":
-          stateMap.highlight = !stateMap.highlight;
-          updatePreview();
-          break;
+      if (clickedLabel === "Preview") {
+        stateMap.state = "preview";
+        updatePreview();
+      } else if (clickedLabel === "HTML") {
+        stateMap.state = "html";
+        alert("HTMLが選択中");
+      } else if (
+        clickedLabel === "Highlight: ON" ||
+        clickedLabel === "Highlight: OFF"
+      ) {
+        updateHighlightButton(label);
+        updatePreview();
       }
     });
   });
@@ -47,7 +46,7 @@ require(["vs/editor/editor.main"], function () {
 /**
  * 変更をエディタに反映
  *
- * @return void
+ * @return {void}
  */
 function updatePreview() {
   if (stateMap.state === "preview") {
@@ -69,5 +68,19 @@ function updatePreview() {
         }
       })
       .catch((error) => console.error("Error:", error));
+  }
+}
+
+/**
+ * ハイライトボタンのテキストを更新して、ハイライトの状態（オンまたはオフ）を表示します。
+ *
+ * @param {HTMLElement} label
+ */
+function updateHighlightButton(label) {
+  stateMap.highlight = !stateMap.highlight;
+  if (stateMap.highlight) {
+    label.textContent = "Highlight: ON";
+  } else {
+    label.textContent = "Highlight: OFF";
   }
 }

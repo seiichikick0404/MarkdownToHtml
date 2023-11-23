@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         echo $parsedown->text($markdown);
     } elseif (in_array($_POST['state'], ['html', 'download'])) {
         $htmlEscaped = htmlspecialchars($parsedown->text($markdown));
-        $lines = explode("\n", $htmlEscaped); 
+        $lines = explode("\n", $htmlEscaped);
 
         foreach ($lines as $line) {
             echo "<p>" . $line . "</p>\n";
